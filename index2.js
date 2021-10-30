@@ -8,7 +8,6 @@ class Event {
     }
   
     trigger(params) {
-        // console.log(params);
       this.listeners.forEach(listener => { listener(params); });
     }
 }
@@ -16,7 +15,7 @@ class Event {
 class Connect {
     constructor() {
       this.board = Array(42).fill();
-      this.currentPlayer = 'X';
+      this.currentPlayer = '🔴';
       this.finished = false;
     
       this.updateCellEvent = new Event();
@@ -25,36 +24,22 @@ class Connect {
     }
   
     play(move) {
-        // if (this.finished) { return false; }
-      console.log(move)
-    //  console.log(move);
-       move = move % 7 + 35;
-       console.log(move)
-    //   move = this.addtoBottom(move);
-    //   console.log(move)
-    //   if (this.finished || move < 0 || move > 42 || this.board[move] || move) { return false; }
-       this.board[move] = this.currentPlayer;
-      this.updateCellEvent.trigger({ move, player: this.currentPlayer });
-  
-      this.finished = this.victory() || this.draw();
-  
-      if (!this.finished) { this.switchPlayer(); }
-  
+        if (this.finished) { return false; }
+        move = this.addtoBottom(move);
+        if (this.finished || move < 0 || move > 42 || this.board[move] ) { return false; }
+        this.board[move] = this.currentPlayer;
+        this.updateCellEvent.trigger({ move, player: this.currentPlayer });
+        this.finished = this.victory() || this.draw();
+        if (!this.finished) { this.switchPlayer(); }
       return true;
     }
 
-    addtoBottom(move) {
-         if(move > 0){
-             if(this.board[move]){
-                 move = move - 7;
-                 this.addtoBottom(move);
-             }else{
-                this.board[move] = this.currentPlayer;
-                 return move;
-             }
-         }else{
-             return false;
-         }
+    addtoBottom(move) { //Checks the value of the cell bottom - up until it's undefined
+      move = move % 7 + 35;
+      while(this.board[move] && move > 0){
+        move = move - 7;
+      }
+      return move;
     }
   
     victory() {
@@ -153,7 +138,7 @@ class Connect {
     }
   
     switchPlayer() {
-      this.currentPlayer = this.currentPlayer === 'X' ? 'O' : 'X';
+      this.currentPlayer = this.currentPlayer === '🔴' ? '🔵' : '🔴'; //puts the opposite value of the current player to currentplayer
     }
 }
 
@@ -164,22 +149,9 @@ class View {
   
     render() {
       const board = document.createElement('div');
-      board.className = 'board';
-    
-    //   this.collums = Array(7).fill().map((_, i) => {
-    //       console.log(i);
-    //     const collum = document.createElement('div');
-    //     collum.className = 'collum';
-
-        // collum.addEventListener('click', () => {
-        //     console.log(i);
-        //     this.playEvent.trigger(i);
-        // });
-        //board.appendChild(collum);
-       
-    // });
-  
+      board.className = 'board'; 
       this.cells = Array(42).fill().map((_, i) => {
+ 
         const cell = document.createElement('div');
         cell.className = 'cell';
   
@@ -198,7 +170,6 @@ class View {
     }
   
     updateCell(data) {
-        // console.log(data);
       this.cells[data.move].innerHTML = data.player;
     }
   
