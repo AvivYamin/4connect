@@ -26,9 +26,10 @@ class Connect {
   
     play(move) {
         // if (this.finished) { return false; }
-
+      console.log(move)
     //  console.log(move);
-    //   move = move % 7 + 35;
+       move = move % 7 + 35;
+       console.log(move)
     //   move = this.addtoBottom(move);
     //   console.log(move)
     //   if (this.finished || move < 0 || move > 42 || this.board[move] || move) { return false; }
